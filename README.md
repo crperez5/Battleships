@@ -31,7 +31,9 @@ Game logic.
 
 ## In Addition
 Check out game rules:
+
 Game Rules: https://www.hasbro.com/common/instruct/Battleship.PDF
+
 Video describing game: https://www.youtube.com/watch?v=q0qpQ8doUp8
 
 ## Author
