@@ -1,0 +1,179 @@
+﻿@page "/"
+
+@using Battleships.Application.Entities;
+@using Battleships.Application.Enums;
+@using Battleships.Application.Events;
+
+@code {
+
+    Application.Entities.Game game = null;
+    string current = "--";
+    string timeLeft = "";
+    string action = "";
+
+    protected override void OnInitialized()
+    {
+        game = new Application.Entities.Game();
+        game.TimeElapsed += OnTimeElapsedHandler;
+        game.TimeOut += OnTimeOutHandler;
+        game.ShipSunk += OnShipSunkHandler;
+        game.ShootMissed += OnShotMissedHandler;
+        game.TargetHit += OnTargetHitHandler;
+
+    }
+
+    public void Dispose()
+    {
+        game.TimeElapsed -= OnTimeElapsedHandler;
+        game.TimeOut -= OnTimeOutHandler;
+        game.ShipSunk -= OnShipSunkHandler;
+        game.ShootMissed -= OnShotMissedHandler;
+        game.TargetHit -= OnTargetHitHandler;
+
+    }
+
+    private async void OnTimeElapsedHandler(object sender, TimeElapsedEventArgs e)
+    {
+        TimeSpan t = TimeSpan.FromSeconds(e.SecondsLeft);
+
+        timeLeft = string.Format("{1:D2}:{2:D2}", t.Hours, t.Minutes, t.Seconds, t.Milliseconds);
+
+        await InvokeAsync(() => StateHasChanged());
+    }
+
+    private async void OnTimeOutHandler(object sender, TimeOutEventArgs e)
+    {
+        await InvokeAsync(() => StateHasChanged());
+    }
+
+    private async void OnShipSunkHandler(object sender, ShipSunkEventArgs e)
+    {
+        action = $"{e.Name} has been sunk!";
+        await InvokeAsync(() => StateHasChanged());
+    }
+
+    private async void OnShotMissedHandler(object sender, ShotMissedEventArgs e)
+    {
+        action = $"You missed the shot!";
+        await InvokeAsync(() => StateHasChanged());
+    }
+
+    private async void OnTargetHitHandler(object sender, TargetHitEventArgs e)
+    {
+        action = $"A target has been hit!";
+        await InvokeAsync(() => StateHasChanged());
+    }
+
+    private void SquareClicked(int x, int y)
+    {
+        game.AttemptShoot(new Coordinates(x, y));
+    }
+
+    private void SetCurrent(Square square)
+    {
+        if (game.Status == GameStatus.InProgress)
+        {
+            current = square.Coordinates.ToString();
+        }
+    }
+
+    private void ClearCurrent()
+    {
+        current = "--";
+    }
+
+    private string PrintStatus()
+    {
+        return game.Status switch
+        {
+            GameStatus.InProgress => "In Progress",
+            GameStatus.Victory => "You WIN !!!",
+            GameStatus.TimeOut => "Time is out !!!",
+            _ => ""
+        };
+    }
+
+
+}
+
+<h3>Battleships</h3>
+
+<div class="container">
+    <div class="board" @onmouseout="@(() => ClearCurrent())">
+
+        @for (int i = 0; i<game.Board.Columns; i++)
+                {
+        <div class="column">
+            @for (int j = 0; j<game.Board.Rows; j++)
+                            {
+                                int x = i;
+                    int y = j;
+                    <div class="square @game.Board.Board[x,y].Status.ToString().ToLower()"
+                         @onclick="@(() => SquareClicked(x, y))"
+                         @onmouseover="@(() => SetCurrent(@game.Board.Board[x,y]))"
+                         @onmouseout="@(() => action = "")"></div>
+                    }
+        </div>
+    }
+    </div>
+
+    <div class="sidebar">
+        <h4>Game status:</h4>
+        <h1>@(PrintStatus())</h1>
+        <h4>Time left:</h4>
+        <h1>@timeLeft</h1>
+        <h4>Current square:</h4>
+        <h1>@current</h1>
+        <br />
+        <h1>@(action.ToUpper())</h1>
+    </div>
+</div>
+
+
+
+<style>
+    .container {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .sidebar {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .board {
+        background-color: blue;
+        display: flex;
+        flex-direction: row;
+        max-width: 700px;
+        margin-right: 20px;
+    }
+
+    .column {
+        min-width: 60px;
+        min-height: 60px;
+        height: 100%;
+    }
+
+    .square {
+        border: solid 1px black;
+        margin: 5px;
+        min-height: 60px;
+        min-width: 60px;
+        cursor: pointer;
+    }
+
+    .hit {
+        background-color: red;
+    }
+
+    .miss {
+        background-color: yellow;
+    }
+
+    .untouched {
+        background-color: lightgray;
+    }
+</style>
