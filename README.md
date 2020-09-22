@@ -1,6 +1,6 @@
 # Battleships
 
-A simple version of the game Battleships (video). The game allows a single human player to play a one-sided game of Battleships against ships placed by the computer.
+A simple version of the game Battleships (see video below). The game allows a single human player to play a one-sided game of Battleships against ships placed by the computer.
 
 
 
@@ -28,6 +28,11 @@ A graphical user interface implemented in Blazor.
 
 ### DependencyResolver.Application
 Game logic.
+
+## In Addition
+Check out game rules:
+Game Rules: https://www.hasbro.com/common/instruct/Battleship.PDF
+Video describing game: https://www.youtube.com/watch?v=q0qpQ8doUp8
 
 ## Author
 
