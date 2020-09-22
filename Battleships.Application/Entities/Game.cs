@@ -14,7 +14,7 @@ namespace Battleships.Application.Entities
 
         public event TimeElapsedEventHandler TimeElapsed;
         public event TimeOutEventHandler TimeOut;
-        public event ShotMissedEventHandler ShootMissed;
+        public event ShotMissedEventHandler ShotMissed;
         public event TargetHitEventHandler TargetHit;
         public event ShipSunkEventHandler ShipSunk;
         public event UserVictoryEventHandler UserVictory;
@@ -60,7 +60,7 @@ namespace Battleships.Application.Entities
             if (ship == null)
             {
                 Board.Board[coordinates.Column, coordinates.Row].MarkAsMissed();
-                ShotMissedEventHandler shotMissedEventHandler = ShootMissed;
+                ShotMissedEventHandler shotMissedEventHandler = ShotMissed;
                 shotMissedEventHandler?.Invoke(this, new ShotMissedEventArgs());
                 return;
             }
