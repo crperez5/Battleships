@@ -23,10 +23,10 @@ The player enters or selects coordinates of the form “A5”, where “A” is 
 
 The solution is composed of two projects:
 
-### DependencyResolver.UI
+### Battleships.UI
 A graphical user interface implemented in Blazor.
 
-### DependencyResolver.Application
+### Battleships.Application
 Game logic.
 
 ## In Addition
